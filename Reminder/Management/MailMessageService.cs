@@ -58,7 +58,7 @@ namespace BirthdayReminder.Management
       SendEmail( emailAddress, body, subject );
     }
 
-    private void SendEmail(string address, string body, string subject)
+    public void SendEmail(string address, string body, string subject)
     {
       var senderAddress = ConfigurationManager.AppSettings["MailAddress"];
       var serverAddress = ConfigurationManager.AppSettings["ServerAddress"];
