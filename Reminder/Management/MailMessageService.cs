@@ -60,11 +60,11 @@ namespace BirthdayReminder.Management
 
     private void SendEmail(string address, string body, string subject)
     {
-      var senderAddress = ConfigurationManager.AppSettings["SenderAddress"];
+      var senderAddress = ConfigurationManager.AppSettings["MailAddress"];
       var serverAddress = ConfigurationManager.AppSettings["ServerAddress"];
       var port = int.Parse( ConfigurationManager.AppSettings["Port"] );
-      var username = ConfigurationManager.AppSettings["Username"];
-      var password = ConfigurationManager.AppSettings["Password"];
+      var username = ConfigurationManager.AppSettings["MailUser"];
+      var password = ConfigurationManager.AppSettings["MailPassword"];
 
       using (var smtpClient = new SmtpClient( serverAddress, port ))
       {
