@@ -1,0 +1,66 @@
+﻿body {
+    color: #222; /* Foreground color used for text */
+    font-family: Helvetica;
+    font-size: 14px;
+    margin: 0; /* Amount of negative space around the outside of the body */
+    padding: 0; /* Amount of negative space around the inside of the body */
+    width: 90%;
+}
+span.subtitle {
+    display: none;
+}
+span.faq {
+    display: none;
+}
+span.answer {
+    font-size: 12px;
+}
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 5px;
+    
+}
+div#reminderCount{
+    display:none;
+}
+input {
+    height: 20px;
+    width: 100%;
+    font-size: 18px;
+}
+
+input[type="submit"] {
+    margin-top: 10px;
+    height: 30px;
+}
+.no_block {
+    display: inline;
+}
+.eg {
+    float: right;
+    color: #595959;
+    font-size: 11px;
+    font-style: italic;
+    
+}
+ul {
+    margin-top: 20px;
+    font-size: .75em;
+}
+
+li {
+    list-style-type: none;
+    padding-right: 1em;
+    display: inline-block;
+}
+.no_mobile, .done {
+    display: none;
+}
+#img_logo {
+    margin-bottom: -20px;
+    width: 100%;
+}
+p {
+    margin-bottom: 2px;
+}

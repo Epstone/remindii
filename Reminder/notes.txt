@@ -1,0 +1,49 @@
+﻿Deutschland   offset =  -2      time 00:00:01 Uhr
+England 	  offset =  -1      time 01:00:01 Uhr
+Weißrussland offset = -3        time 23:00:01 Uhr   days -1
+Kanada 		  offset = +7       time 09:00:00
+
+
+reminderHour = 2 + offset 
+
+... weiß russland: std = -2    dst = -3                              15:00 WZ   -1
+
+							versendet mail um:
+1. erstellung in wz(-2), datum in sz (-3) -> de 00:00 -> wr 01:00
+2. erstellung in sz(-3), datum in wz (-2) -> de 23:00 -> wr 00:00
+3. erstellung in wz(-2), datum in wz (-2) -> de 00:00 -> wr 01:00
+3. erstellung in sz(-3), datum in sz (-3) -> de 23:00 -> wr 00:00
+
+... Kanada 		  offset = +7       ka: time 09:00 de: 00:00
+1. erstellung in wz(+8), datum in sz (+7) -> de 10:00 -> ka 01:00
+2. erstellung in sz(+7), datum in wz (+8) -> de 09:00 -> ka 00:00
+3. erstellung in wz(+8), datum in wz (+8) -> de 00:00 -> ka 01:00
+3. erstellung in sz(+7), datum in sz (+7) -> de 23:00 -> ka 00:00
+
+
+
+
+1. First time usage:
+
+User creates reminder: 
+
+if email address is a known and verified
+	-> verify password hash, create reminder
+
+address is known but not yet verified
+	-> Please verify your email address first, we won't create any further reminders before!
+
+address is totally unknown 
+
+-> Create Verification Entry
+- Produce email with verification activation
+- if user clicks link, update: the email address is verified. Please keep your password in mind for future reminders!
+- if user clicks "SPAM", remove everthing
+
+Reminder sending:
+2. Foreach hour of day (hourly cronjob)
+ Select all reminder items where Day = todays day and Month = todays.month
+ Check wether we have the hour "0" for entry
+  yes ->send email
+  no -> ignore
+	include deletion possibility into email

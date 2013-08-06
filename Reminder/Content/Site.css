@@ -1,0 +1,176 @@
+/* Design and Layout
+-----------------------------------------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial,Helvetica,sans-serif;
+}
+#content {
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#banner_box {
+    /*background-image: url('../../Content/banner_background.png');     background-repeat: repeat-x;*/
+    background-color: #595959;
+    height: 90px;
+    padding-top: 10px;
+    border: 1px solid #CCC;
+}
+.main_content {
+    border: 1px solid #CCC;
+    padding: 1em;
+}
+#img_logo {
+    margin-left: 23px;
+}
+/*#img_new {
+    height: 50px;
+    position: relative;
+    top: -1em;
+    width: 50px;
+}*/
+/* Text Element Styles
+-----------------------------------------------------------*/
+
+span.subtitle {
+    color: White;
+    display: block;
+    font-size: 0.8em;
+    font-style: italic;
+    left: 92px;
+    margin-bottom: 30px;
+    position: relative;
+    top: -19px;
+}
+
+
+p {
+    margin-bottom: 1em;
+    font-size: .9em;
+}
+
+label.large {
+    width: 150px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 20px;
+}
+.eg {
+    position: relative;
+    left: 175px;
+    font-size: .9em;
+    font-style: italic;
+    color: #595959;
+}
+.smaller {
+    font-size: .8em;
+}
+span.faq {
+    display: block;
+    font-weight: bold;
+}
+.has-input {
+    margin-bottom: 1em;
+}
+.no-width {
+    width: auto;
+}
+ul {
+    margin-top: .4em;
+    margin-left: auto;
+    margin-right: auto;
+   text-align: center;
+    width: 700px;
+    font-size: .75em;
+}
+li.last {
+    border: 0;
+}
+li {
+    list-style-type: none;
+    padding: 0 1em;
+    display: inline-block;
+    border-right: 1px solid black;
+}
+
+
+input.btn {
+    padding: 10px;
+}
+input[type="text"], input[type="password"], select {
+    height: 1.5em;
+    width: 15em;
+}
+
+h1 {
+    font-size: 1.5em;
+    font-family: MV Boli;
+    color: #595959;
+    margin-bottom: .2em;
+}
+h2 {
+    font-size: 1em;
+}
+strong {
+    font-size: .9em;
+    font-style: italic;
+}
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error {
+    color: #00773B;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+.input-validation-error {
+    border: 1px solid #00773B;
+    background-color: #00FF7B;
+}
+
+.validation-summary-errors {
+    font-weight: bold;
+    color: #00773B;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* Link Styles
+-----------------------------------------------------------*/
+a:link {
+    color: #595959;
+}
+a:visited {
+    color: #595959;
+}
+a:hover {
+    color: #CCCCCC;
+    text-decoration: none;
+}
+a:active {
+    color: #595959;
+}
+
+#tooltip {
+    position: absolute;
+    z-index: 3000;
+    border: 1px solid #111;
+    background-color: #E2E2E2;
+    padding: 5px;
+    opacity: 0.85;
+}
+
+img {
+    border-style: none;
+}
+
+.clear {
+    clear: both;
+}
