@@ -10,7 +10,7 @@ using System.Net;
 using System.Configuration;
 namespace BirthdayReminder.Controllers
 {
-  public class MaintenanceController : Controller
+  public class MaintenanceController : ReminderController
   {
     IMessageService _messageService;
     protected override void Initialize(System.Web.Routing.RequestContext requestContext)
@@ -49,29 +49,28 @@ namespace BirthdayReminder.Controllers
 
     private void SendReminders()
     {
-      using (var db = new Database())
+
+      bool todoRemindersExisting = true;
+      while (todoRemindersExisting)
       {
-        bool todoRemindersExisting = true;
-        while (todoRemindersExisting)
+        var reminder = ReminderRepository.GetNextTimeHasComeReminder();
+        if (reminder != null)
         {
-          var reminder = db.GetNextTimeHasComeReminder();
-          if (reminder != null)
+          try
           {
-            try
-            {
-              //send reminder
-              _messageService.SendReminder( reminder );
-              //increase next reminding date for this reminder 
-              db.IncreaseNextRemindingDate( reminder.ID );
-            }
-            catch (Exception ex)
-            {
-              Logger.LogError( ex );
-            }
+            //send reminder
+            _messageService.SendReminder( reminder );
+            //increase next reminding date for this reminder 
+            ReminderRepository.IncreaseNextRemindingDate( reminder.ID );
           }
-          //All reminders have been processed, exit loop
-          else todoRemindersExisting = false;
+          catch (Exception ex)
+          {
+            Logger.LogError( ex );
+          }
         }
+        //All reminders have been processed, exit loop
+        else todoRemindersExisting = false;
+
       }
     }
   }

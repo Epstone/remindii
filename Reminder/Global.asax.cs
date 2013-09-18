@@ -43,10 +43,6 @@ namespace BirthdayReminder
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
-
-            //Initialize Logger
-            LogManagement logManager = new LogManagement();
-            Logger.Initialize(logManager);
         }
     }
 }

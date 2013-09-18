@@ -22,6 +22,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,14 +45,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data">
-      <HintPath>..\SharedLibs\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\MySql.Data.6.7.4\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data.Entity">
       <HintPath>..\SharedLibs\MySql.Data.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Web">
-      <HintPath>..\SharedLibs\MySql.Web.dll</HintPath>
+    <Reference Include="MySqlRepository">
+      <HintPath>..\..\Epstone\MySqlRepository\bin\Release\MySqlRepository.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -75,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\MaintenanceController.cs" />
+    <Compile Include="Controllers\ReminderController.cs" />
     <Compile Include="DataAccess\DbUtils.cs" />
     <Compile Include="Entities\ReminderTask.cs" />
     <Compile Include="Enums\E_ReminderCreationStatus.cs" />
@@ -84,12 +90,10 @@
     <Compile Include="Extensions\WebExtensions.cs" />
     <Compile Include="Management\IMessageService.cs" />
     <Compile Include="Controllers\VerificationController.cs" />
-    <Compile Include="DataAccess\Database.cs" />
     <Compile Include="DataAccess\DbReminder.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Management\LogManagement.cs" />
     <Compile Include="Management\MailMessageService.cs" />
     <Compile Include="Models\ReminderModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -127,6 +131,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
@@ -164,6 +169,7 @@
     <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
     <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\BirthdayReminder.Master" />

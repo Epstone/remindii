@@ -12,7 +12,7 @@ using BirthdayReminder.Management;
 
 namespace BirthdayReminder.Controllers
 {
-  public class HomeController : Controller
+  public class HomeController : ReminderController
   {
     public IMessageService MessageService { get; set; }
     protected override void Initialize(System.Web.Routing.RequestContext requestContext)
@@ -21,11 +21,8 @@ namespace BirthdayReminder.Controllers
       if (this.MessageService == null) this.MessageService = new MailMessageService();
 
       //set reminder and email count for master page
-      using (var db = new Database())
-      {
-        ViewData["ReminderCount"] = db.GetReminderCount();
-        ViewData["UserCount"] = db.GetUserCount();
-      }
+      ViewData["ReminderCount"] = ReminderRepository.GetReminderCount();
+      ViewData["UserCount"] = ReminderRepository.GetUserCount();
     }
 
 
@@ -142,57 +139,57 @@ namespace BirthdayReminder.Controllers
 
       string passwordHash = Security.GetSHA1Hash( model.Password );
       E_ReminderCreationStatus resultStatus = E_ReminderCreationStatus.error;
-      using (var db = new Database())
+
+
+      E_VerificationStatus verificationStatus = ReminderRepository.GetVerificationStatus( model.Email, passwordHash );
+      int mailID = 0;
+      DateTime nextReminder;
+      switch (verificationStatus)
       {
-        E_VerificationStatus verificationStatus = db.GetVerificationStatus( model.Email, passwordHash );
-        int mailID = 0;
-        DateTime nextReminder;
-        switch (verificationStatus)
-        {
-          case E_VerificationStatus.emailUnknown:
-            Guid verificationCode = Guid.NewGuid();
-            int emailID = db.InsertUnverifiedEmail( model.Email, passwordHash, verificationCode );
-            MessageService.SendVerificationEmail( model.Email, verificationCode );
-            nextReminder = GetNextRemindingDate( model, DateTime.Now );
-            db.AddReminder( model, emailID, nextReminder );
+        case E_VerificationStatus.emailUnknown:
+          Guid verificationCode = Guid.NewGuid();
+          int emailID = ReminderRepository.InsertUnverifiedEmail( model.Email, passwordHash, verificationCode );
+          MessageService.SendVerificationEmail( model.Email, verificationCode );
+          nextReminder = GetNextRemindingDate( model, DateTime.Now );
+          ReminderRepository.AddReminder( model, emailID, nextReminder );
 
-            resultStatus = E_ReminderCreationStatus.successVerifyEmail;
+          resultStatus = E_ReminderCreationStatus.successVerifyEmail;
 
-            Logger.LogInfo(
-                string.Format( "unkown address remindii for:'{0}', Name: {1}"
-                , model.Email, model.Name ) );
-            break;
+          Logger.LogInfo(
+              string.Format( "unkown address remindii for:'{0}', Name: {1}"
+              , model.Email, model.Name ) );
+          break;
 
-          case E_VerificationStatus.emailNotYetVerified:
-            mailID = db.GetEmailID( model.Email );
-            nextReminder = GetNextRemindingDate( model, DateTime.Now );
-            db.AddReminder( model, mailID, nextReminder );
-            resultStatus = E_ReminderCreationStatus.successVerifyEmail;
+        case E_VerificationStatus.emailNotYetVerified:
+          mailID = ReminderRepository.GetEmailID( model.Email );
+          nextReminder = GetNextRemindingDate( model, DateTime.Now );
+          ReminderRepository.AddReminder( model, mailID, nextReminder );
+          resultStatus = E_ReminderCreationStatus.successVerifyEmail;
 
-            Logger.LogInfo(
-                     string.Format( "not verified remindii for:'{0}', Name: {1}"
-                    , model.Email, model.Name ) );
-            break;
+          Logger.LogInfo(
+                   string.Format( "not verified remindii for:'{0}', Name: {1}"
+                  , model.Email, model.Name ) );
+          break;
 
-          case E_VerificationStatus.successfull:
-            mailID = db.GetEmailID( model.Email );
-            nextReminder = GetNextRemindingDate( model, DateTime.Now );
-            db.AddReminder( model, mailID, nextReminder );
-            resultStatus = E_ReminderCreationStatus.successfull;
-            Logger.LogInfo(
-                    string.Format( "verified remindii for:'{0}', Name: {1}"
-                    , model.Email, model.Name ) );
-            break;
+        case E_VerificationStatus.successfull:
+          mailID = ReminderRepository.GetEmailID( model.Email );
+          nextReminder = GetNextRemindingDate( model, DateTime.Now );
+          ReminderRepository.AddReminder( model, mailID, nextReminder );
+          resultStatus = E_ReminderCreationStatus.successfull;
+          Logger.LogInfo(
+                  string.Format( "verified remindii for:'{0}', Name: {1}"
+                  , model.Email, model.Name ) );
+          break;
 
-          case E_VerificationStatus.wrongPassword:
-            resultStatus = E_ReminderCreationStatus.wrongPassword;
-            Logger.LogInfo( "Wrong password for email: " + model.Email );
-            break;
-        }
-
-        if (resultStatus == E_ReminderCreationStatus.error) throw new ApplicationException( "Fehler" );
-        return resultStatus;
+        case E_VerificationStatus.wrongPassword:
+          resultStatus = E_ReminderCreationStatus.wrongPassword;
+          Logger.LogInfo( "Wrong password for email: " + model.Email );
+          break;
       }
+
+      if (resultStatus == E_ReminderCreationStatus.error) throw new ApplicationException( "Fehler" );
+      return resultStatus;
+
     }
 
     public DateTime GetNextRemindingDate(ReminderModel model, DateTime now)
@@ -227,10 +224,9 @@ namespace BirthdayReminder.Controllers
     [HandleError]
     public ActionResult DeleteReminder(Guid reminderID)
     {
-      using (var db = new Database())
-      {
-        db.DeleteReminder( reminderID );
-      }
+
+      ReminderRepository.DeleteReminder( reminderID );
+
 
       return View();
     }

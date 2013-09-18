@@ -8,46 +8,44 @@ using BirthdayReminder.Utility;
 
 namespace BirthdayReminder.Controllers
 {
-    public class VerificationController : Controller
+  public class VerificationController : ReminderController
+  {
+    protected override void Initialize(System.Web.Routing.RequestContext requestContext)
     {
-        protected override void Initialize(System.Web.Routing.RequestContext requestContext)
-        {
-            base.Initialize(requestContext);
+      base.Initialize( requestContext );
 
-            //set reminder and email count for master page
-            using (var db = new Database())
-            {
-                ViewData["ReminderCount"] = db.GetReminderCount();
-                ViewData["UserCount"] = db.GetUserCount();
-            }
-        }
+      //set reminder and email count for master page
 
-        [HandleError]
-        public ActionResult VerifyMailAddress(string verificationCode)
-        {
-            if (string.IsNullOrEmpty(verificationCode)) return RedirectToAction("Index");
+      ViewData["ReminderCount"] = ReminderRepository.GetReminderCount();
+      ViewData["UserCount"] = ReminderRepository.GetUserCount();
 
-            using (var db = new Database())
-            {
-                ViewData["VerificationSuccess"] = db.VerifyMailAddress(verificationCode);
-                string msg = "Verified mail address by code: " + verificationCode;
-                Logger.LogInfo(msg);
-            }
-
-            return View();
-        }
-
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            Logger.LogError(filterContext.Exception);
-
-            // Mark exception as handled
-            filterContext.ExceptionHandled = true;
-
-            // Redirect
-            filterContext.Result = this.RedirectToAction("Error", "Home");
-            
-            base.OnException(filterContext);
-        }
     }
+
+    [HandleError]
+    public ActionResult VerifyMailAddress(string verificationCode)
+    {
+      if (string.IsNullOrEmpty( verificationCode )) return RedirectToAction( "Index" );
+
+
+      ViewData["VerificationSuccess"] = ReminderRepository.VerifyMailAddress( verificationCode );
+      string msg = "Verified mail address by code: " + verificationCode;
+      Logger.LogInfo( msg );
+
+
+      return View();
+    }
+
+    protected override void OnException(ExceptionContext filterContext)
+    {
+      Logger.LogError( filterContext.Exception );
+
+      // Mark exception as handled
+      filterContext.ExceptionHandled = true;
+
+      // Redirect
+      filterContext.Result = this.RedirectToAction( "Error", "Home" );
+
+      base.OnException( filterContext );
+    }
+  }
 }

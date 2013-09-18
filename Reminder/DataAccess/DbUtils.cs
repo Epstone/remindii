@@ -5,14 +5,38 @@ using System.Text;
 using System.Data;
 using MySql.Data.MySqlClient;
 using BirthdayReminder.Utility;
+using MySqlRepository;
 
 namespace BirthdayReminder.DataAccess
 {
-    public partial class Database
+  public partial class ReminderDatabase
+  {
+    MySqlRepositoryBase _db;
+
+    private DataTable GetResultAsDataTable(MySqlCommand sqlCom)
     {
-        public void AddLog(SeverityLevel level, string ExceptionMessage, string ExceptionStacktrace, string customMessage)
+      try
+      {
+        DataTable result = new DataTable();
+        using (MySqlDataAdapter da = new MySqlDataAdapter( sqlCom ))
         {
-            var sqlCom = GetCommand(@"INSERT INTO logs 
+          da.Fill( result );
+        }
+
+        return result;
+      }
+      catch (Exception ex)
+      {
+        Logger.LogError( ex );
+        throw ex;
+      }
+    }
+
+    public void AddLog(SeverityLevel level, string ExceptionMessage, string ExceptionStacktrace, string customMessage)
+    {
+      try
+      {
+        var sqlCom = _db.GetWriteCommand( @"INSERT INTO logs 
                                  (
                                   LogLevel,
                                   ExceptionMessage,
@@ -27,44 +51,62 @@ namespace BirthdayReminder.DataAccess
                                   @ExceptionStacktrace,
                                   @CustomMessage,
                                   @Date
-                                );");
+                                );" );
 
-            sqlCom.Parameters.AddWithValue("@LogLevel", level.ToString());
-            sqlCom.Parameters.AddWithValue("@ExceptionMessage", ExceptionMessage);
-            sqlCom.Parameters.AddWithValue("@ExceptionStacktrace", ExceptionStacktrace);
-            sqlCom.Parameters.AddWithValue("@CustomMessage", customMessage);
-            sqlCom.Parameters.AddWithValue("@Date", DateTime.Now);
+        sqlCom.Parameters.AddWithValue( "@LogLevel", level.ToString() );
+        sqlCom.Parameters.AddWithValue( "@ExceptionMessage", ExceptionMessage );
+        sqlCom.Parameters.AddWithValue( "@ExceptionStacktrace", ExceptionStacktrace );
+        sqlCom.Parameters.AddWithValue( "@CustomMessage", customMessage );
+        sqlCom.Parameters.AddWithValue( "@Date", DateTime.Now );
 
-            sqlCom.ExecuteNonQuery();
-        }
+        sqlCom.ExecuteNonQuery();
+      }
+      finally
+      {
+        _db.CloseConnections();
+      }
+    }
 
-        public DataTable GetAllLogs(string severityLevel)
-        {
-            if (string.IsNullOrEmpty(severityLevel))
-                severityLevel = "%";
+    public DataTable GetAllLogs(string severityLevel)
+    {
+      if (string.IsNullOrEmpty( severityLevel ))
+        severityLevel = "%";
 
-            MySqlCommand sqlCom = GetCommand(@"SELECT `Date`,LogLevel,`ExceptionMessage`,`ExceptionStacktrace`,`CustomMessage` 
+      try
+      {
+        MySqlCommand sqlCom = _db.GetReadCommand( @"SELECT `Date`,LogLevel,`ExceptionMessage`,`ExceptionStacktrace`,`CustomMessage` 
                                                             FROM logs 
                                                             WHERE (LogLevel like ?LogLevel )
-                                                            ORDER BY Date DESC;");
-            sqlCom.Parameters.AddWithValue("?LogLevel", severityLevel);
+                                                            ORDER BY Date DESC;" );
+        sqlCom.Parameters.AddWithValue( "?LogLevel", severityLevel );
 
-            return GetResultAsDataTable(sqlCom);
-        }
+        var result = GetResultAsDataTable( sqlCom );
 
-        internal void ClearLogs()
-        {
-            string text = "TRUNCATE TABLE logs";
-            var sqlCom = GetCommand(text);
-
-            try
-            {
-                sqlCom.ExecuteNonQuery();
-            }
-            catch (MySqlException ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
+        return result;
+      }
+      finally
+      {
+        _db.CloseConnections();
+      }
     }
+
+    internal void ClearLogs()
+    {
+      string text = "TRUNCATE TABLE logs";
+      var sqlCom = _db.GetWriteCommand( text );
+
+      try
+      {
+        sqlCom.ExecuteNonQuery();
+      }
+      catch (MySqlException ex)
+      {
+        Logger.LogError( ex );
+      }
+      finally
+      {
+        _db.CloseConnections();
+      }
+    }
+  }
 }
