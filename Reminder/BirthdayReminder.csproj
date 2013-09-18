@@ -81,7 +81,7 @@
   <ItemGroup>
     <Compile Include="Controllers\MaintenanceController.cs" />
     <Compile Include="Controllers\ReminderController.cs" />
-    <Compile Include="DataAccess\DbUtils.cs" />
+    <Compile Include="DataAccess\LoggerDatabase.cs" />
     <Compile Include="Entities\ReminderTask.cs" />
     <Compile Include="Enums\E_ReminderCreationStatus.cs" />
     <Compile Include="Enums\E_VerificationStatus.cs" />
@@ -90,14 +90,13 @@
     <Compile Include="Extensions\WebExtensions.cs" />
     <Compile Include="Management\IMessageService.cs" />
     <Compile Include="Controllers\VerificationController.cs" />
-    <Compile Include="DataAccess\DbReminder.cs" />
+    <Compile Include="DataAccess\ReminderDatabase.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Management\MailMessageService.cs" />
     <Compile Include="Models\ReminderModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\ILogServer.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\Security.cs" />
     <Compile Include="Utility\SeverityLevel.cs" />

@@ -14,11 +14,9 @@ namespace BirthdayReminder.Controllers
 {
   public class HomeController : ReminderController
   {
-    public IMessageService MessageService { get; set; }
     protected override void Initialize(System.Web.Routing.RequestContext requestContext)
     {
       base.Initialize( requestContext );
-      if (this.MessageService == null) this.MessageService = new MailMessageService();
 
       //set reminder and email count for master page
       ViewData["ReminderCount"] = ReminderRepository.GetReminderCount();

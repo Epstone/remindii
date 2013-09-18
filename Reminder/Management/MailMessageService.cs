@@ -15,11 +15,15 @@ namespace BirthdayReminder.Management
 {
   public class MailMessageService : IMessageService
   {
-    public MailMessageService()
+    LogUtility Logger { get; set; }
+
+    public MailMessageService(LogUtility logger)
     {
       Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
       Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+      this.Logger = logger;
     }
+
 
     public void SendReminder(ReminderTask reminder)
     {

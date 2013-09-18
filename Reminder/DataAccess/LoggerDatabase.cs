@@ -9,9 +9,18 @@ using MySqlRepository;
 
 namespace BirthdayReminder.DataAccess
 {
-  public partial class ReminderDatabase
+  public class LoggerRepository
   {
+
     MySqlRepositoryBase _db;
+
+    public LoggerRepository Initialize(string connectionString)
+    {
+      _db = new MySqlRepositoryBase();
+      this._db.Initialize( connectionString, connectionString );
+
+      return this;
+    }
 
     private DataTable GetResultAsDataTable(MySqlCommand sqlCom)
     {
@@ -27,7 +36,6 @@ namespace BirthdayReminder.DataAccess
       }
       catch (Exception ex)
       {
-        Logger.LogError( ex );
         throw ex;
       }
     }
@@ -98,10 +106,6 @@ namespace BirthdayReminder.DataAccess
       try
       {
         sqlCom.ExecuteNonQuery();
-      }
-      catch (MySqlException ex)
-      {
-        Logger.LogError( ex );
       }
       finally
       {

@@ -12,21 +12,15 @@ namespace BirthdayReminder.Controllers
 {
   public class MaintenanceController : ReminderController
   {
-    IMessageService _messageService;
-    protected override void Initialize(System.Web.Routing.RequestContext requestContext)
-    {
-      base.Initialize( requestContext );
-      if (this._messageService == null) this._messageService = new MailMessageService();
-    }
-
     public MaintenanceController()
     {
 
     }
     public MaintenanceController(IMessageService messageService)
     {
-      this._messageService = messageService;
+      this.MessageService = messageService;
     }
+    
     public ActionResult Hourly(string secretKey)
     {
       if (secretKey == ConfigurationManager.AppSettings["SecretKey"])
@@ -59,7 +53,7 @@ namespace BirthdayReminder.Controllers
           try
           {
             //send reminder
-            _messageService.SendReminder( reminder );
+            this.MessageService.SendReminder( reminder );
             //increase next reminding date for this reminder 
             ReminderRepository.IncreaseNextRemindingDate( reminder.ID );
           }

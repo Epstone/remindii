@@ -9,15 +9,25 @@ using BirthdayReminder.Entities;
 using MySql.Data.MySqlClient;
 using BirthdayReminder.Utility;
 using System.Configuration;
+using MySqlRepository;
+using System.Data;
 
 namespace BirthdayReminder.DataAccess
 {
-  public partial class ReminderDatabase
+  public class ReminderDatabase
   {
+    MySqlRepositoryBase _db;
+    LogUtility _logger;
 
-    public void Initialize(string connectionString) { 
+    public void Initialize(string connectionString, LogUtility logger)
+    {
+      _logger = logger;
+
+      _db = new MySqlRepositoryBase();
       this._db.Initialize( connectionString, connectionString );
     }
+
+
 
     internal E_VerificationStatus GetVerificationStatus(string email, string passwordHash)
     {
@@ -227,7 +237,7 @@ namespace BirthdayReminder.DataAccess
         }
         catch (MySqlException ex)
         {
-          Logger.Log( ex, SeverityLevel.Error,
+          _logger.Log( ex, SeverityLevel.Error,
               string.Format( "Could not delete reminder with ID {0}", reminderID ) );
           throw ex;
         }

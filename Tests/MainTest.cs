@@ -21,13 +21,21 @@ namespace Tests
   {
 
     ReminderDatabase _db;
+    LogUtility _logger;
 
     [SetUp]
     public void Setup()
     {
       var connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
       _db = new ReminderDatabase();
-      _db.Initialize( connectionString );
+
+      var logRepo = new LoggerRepository();
+      logRepo.Initialize( connectionString );
+
+      _logger = new LogUtility();
+      _logger.Initialize( logRepo );
+
+      _db.Initialize( connectionString, _logger );
     }
 
     /// <summary>
@@ -185,13 +193,13 @@ namespace Tests
         Name = "Test Bday"
       };
 
-      MailMessageService messageService = new MailMessageService();
+      MailMessageService messageService = new MailMessageService(_logger);
       messageService.SendReminder( reminder );
     }
     [Test]
     public void SendVerificationMailTest()
     {
-      MailMessageService messageService = new MailMessageService();
+      MailMessageService messageService = new MailMessageService( _logger );
       messageService.SendVerificationEmail( "bla@test.com", Guid.NewGuid() );
     }
 
